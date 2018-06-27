@@ -72,7 +72,6 @@ mv $i $VAR1
 done
 
 echo 'end'
-
 echo "begin" 
 
 for i in correctdatabase ; do 
@@ -107,29 +106,9 @@ echo "end"
 
 cat *ITSsequentie.txt >> ex.fa
 rm *ITSsequentie.txt
-
+	 
 centrifuge-download -o taxonomy taxonomy
-
-for j in '>'*; do
-
-VAR1="$(cat $j| head -1 | awk '{$1= ""; print $0}' | sed 's/^\(.*\),.*$/\1/'))" 
-VAR2="$(cat names.dmp | awk '{print $2}')"
-VAR3="$(cat $j| head -1 | awk '{print $1}'| tr -d '>')"
-VAR4="$(cat names.dmp | awk '{print $1}')"
-
-if [ "$VAR1" == "$VAR2" ]; then 
-echo "$VAR3 \t $VAR4" >> conversationtable
-
-else
-echo "No Match" 
-fi
-
-done
-
-awk 'NR==FNR{a[$2];next} ($1 in a) {print}' ex.fa conversationtable > ex.conv
-awk 'NR==FNR{a[$2];next} ($1 in a) {print}' ex.conv taxonomy/nodes.dmp > ex.tree
-awk 'NR==FNR{a[$2];next} ($1 in a) {print}' ex.conv taxonomy/names.dmp > ex.name
-
+centrifuge-download -o library -m -d "bacteria" refseq > seqid2taxid.map
 centrifuge-build --conversion-table ex.conv \
-                 --taxonomy-tree ex.tree --name-table ex.name \ 
-                 ex.fa ex
+             	--taxonomy-tree ex.tree --name-table ex.name \
+             	ex.fa ex
